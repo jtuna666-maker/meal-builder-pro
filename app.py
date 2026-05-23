@@ -65,7 +65,19 @@ st.title("👨‍🍳 Meal Builder Pro")
 st.caption("v2.1 - Fixed & Final")
 
 tab1, tab2, tab3 = st.tabs(["🗓️ Planning Grid", "🛒 Grocery List", "📚 Recipe Library"])
-
+search_query = st.text_input("Search Recipes")
+if search_query:
+    matching_recipes = [name for name in st.session_state.library if search_query.lower() in name.lower()]
+    if matching_recipes:
+        for name in matching_recipes:
+            st.info(f"📚 {name} ({st.session_state.library[name]['category']})")
+    else:
+        st.warning("Recipe not found.")
+        if st.button(f"Add '{search_query}' to Library"):
+            st.session_state.library[search_query] = {"ingredients": [], "category": "Other", "image": None}
+            save_data()
+            st.success(f"Added {search_query}!")
+            st.rerun()
 with tab1:
     view_mode = st.radio("View Mode", ["Weekly", "Monthly"], horizontal=True)
     col1, col2 = st.columns([1, 3])
